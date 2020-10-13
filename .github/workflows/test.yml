@@ -38,3 +38,9 @@ jobs:
         TEST_RESULT=$?
         docker-compose -f postgres.yml down --volumes
         exit $TEST_RESULT
+    - name: Test with MySQL
+      run: |
+        docker-compose -f mysql.yml up --build --abort-on-container-exit --exit-code-from app
+        TEST_RESULT=$?
+        docker-compose -f mysql.yml down --volumes
+        exit $TEST_RESULT
