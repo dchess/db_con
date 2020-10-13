@@ -43,4 +43,10 @@ jobs:
         docker-compose -f mysql.yml up --build --abort-on-container-exit --exit-code-from app
         TEST_RESULT=$?
         docker-compose -f mysql.yml down --volumes
+        exit $
+    - name: Test with MS SQL
+      run: |
+        docker-compose -f mssql.yml up --build --abort-on-container-exit --exit-code-from app
+        TEST_RESULT=$?
+        docker-compose -f mssql.yml down --volumes
         exit $TEST_RESULT

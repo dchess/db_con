@@ -1,0 +1,32 @@
+version: '3'
+
+services:
+  mssql:
+    image: mcr.microsoft.com/mssql/server:2017-latest-ubuntu
+    environment:
+      ACCEPT_EULA: Y
+      MSSQL_PID: express
+      SA_PASSWORD: TestingThis0ut
+    ports:
+        - "1433:1433"
+
+  app:
+    build:
+      context: .
+      dockerfile: tests/Dockerfile
+    image: sqlsorcery_v2_tests
+    environment:
+      DB_DIALECT: mssql
+      DB: master
+      DB_USER: sa
+      DB_PWD: TestingThis0ut
+      DB_PORT: 1433
+      DB_SCHEMA: dbo
+      DB_SERVER: mssql
+      WAIT_HOSTS: mssql:1433
+      WAIT_HOSTS_TIMEOUT: 300
+      WAIT_SLEEP_INTERVAL: 30
+      WAIT_HOSTS_CONNECT_TIMEOUT: 30
+    command: sh -c "/wait && pipenv run pytest -s -v"
+    depends_on:
+      - mssql
