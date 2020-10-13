@@ -1,0 +1,31 @@
+version: '3'
+
+services:
+  postgres:
+    image: postgres:11 
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - "5432:5432"
+
+  app:
+    build:
+        context: .
+        dockerfile: tests/Dockerfile
+    image: sqlsorcery_v2_tests
+    environment:
+      - DB_DIALECT=postgresql
+      - DB=postgres
+      - DB_USER=postgres
+      - DB_PWD=postgres
+      - DB_PORT=5432
+      - DB_SCHEMA=public
+      - DB_SERVER=postgres
+      - WAIT_HOSTS=postgres:5432
+      - WAIT_HOSTS_TIMEOUT=300
+      - WAIT_SLEEP_INTERVAL=30
+      - WAIT_HOSTS_CONNECT_TIMEOUT=30
+    command: sh -c "/wait && pipenv run pytest -s -v"
+    depends_on:
+      - postgres

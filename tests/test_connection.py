@@ -3,7 +3,7 @@ from sqlsorcery import Connection, ENV_CONFIG
 from sqlalchemy.exc import OperationalError
 
 
-def test_sqlite_engine():
+def test_engine_conection():
     sql = Connection(**ENV_CONFIG)
     try:
         sql.engine.connect()

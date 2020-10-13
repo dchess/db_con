@@ -4,6 +4,8 @@ services:
     build:
       context: .
       dockerfile: tests/Dockerfile
-    environment: 
-      DB: test.db
+    image: sqlsorcery_v2_tests
+    environment:
       DB_DIALECT: sqlite
+      DB: test.db
+    command: pipenv run pytest -s -v

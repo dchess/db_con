@@ -1,7 +1,7 @@
 # This workflow will install Python dependencies and run tests.
 # For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
 
-name: Python application
+name: SQLSorcery
 
 on: [push]
 
@@ -17,16 +17,24 @@ jobs:
     - name: Install dependencies with pipenv
       run: |
         pip install pipenv
-        pipenv install --skip-lock --dev
+        pipenv install --skip-lock
     - name: Run black
       run: |
+        pipenv install black --skip-lock
         pipenv run black --check .
     - name: Run flake8
       run: |
+        pipenv install flake8 --skip-lock
         pipenv run flake8
     - name: Test with SQLite
       run: |
         docker-compose -f sqlite.yml up --build --abort-on-container-exit --exit-code-from app
         TEST_RESULT=$?
         docker-compose -f sqlite.yml down --volumes
+        exit $TEST_RESULT
+    - name: Test with PostgreSQL
+      run: |
+        docker-compose -f postgres.yml up --build --abort-on-container-exit --exit-code-from app
+        TEST_RESULT=$?
+        docker-compose -f postgres.yml down --volumes
         exit $TEST_RESULT
